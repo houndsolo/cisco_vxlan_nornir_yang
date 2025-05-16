@@ -6,9 +6,10 @@ Topology: Two Cisco 9300 spines and Two 9300 leaves.
 
 Additionally, 7 virtualized vxlan leaves, one on each of my hypervisors.
 
-## Overview
+I'm using Ingress Replication in order to be inter-operable with VyOS.
+I can't get VyOS to join multicast groups when using multicast.
+PIM and MSDP is configured, as multicast underlay works with cisco 9300s only
 
-The project generates and applies VXLAN configurations to spine and leaf switches via NETCONF.
 
 ## Inventory
 

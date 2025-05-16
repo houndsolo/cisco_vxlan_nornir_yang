@@ -58,7 +58,7 @@ def set_bgp(task, num_spines, num_leafs):
                 <evpn_cont xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-l2vpn">
                   <evpn>
                     <replication-type>
-                      <static/>
+                      <ingress/>
                     </replication-type>
                     <default-gateway>
                       <advertise/>
@@ -82,11 +82,7 @@ def set_bgp(task, num_spines, num_leafs):
                             <address-resolution>enable</address-resolution>
                           </flooding-suppression>
                           <replication-type>
-                            <static>
-                              <address>
-                                <ipv4-address>225.0.0.69</ipv4-address>
-                              </address>
-                            </static>
+                            <ingress/>
                           </replication-type>
                           <l2vni-base>{l2vni_base_default}</l2vni-base>
                         </default>
