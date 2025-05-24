@@ -81,9 +81,6 @@ def set_bgp(task, num_spines, num_leafs):
                           <flooding-suppression>
                             <address-resolution>enable</address-resolution>
                           </flooding-suppression>
-                          <replication-type>
-                            <ingress/>
-                          </replication-type>
                           <l2vni-base>{l2vni_base_default}</l2vni-base>
                         </default>
                       </profile>

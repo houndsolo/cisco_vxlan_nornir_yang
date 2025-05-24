@@ -69,7 +69,7 @@ def main():
     nr_s8 = nr.filter(hostname="10.20.0.8")
     nr_s10 = nr.filter(hostname="10.20.0.10")
 
-    results = nr.run(task=configure_vxlan, num_spines=num_spines, num_leafs=num_leafs)
+    results = nr_leafs.run(task=configure_vxlan, num_spines=num_spines, num_leafs=num_leafs)
     print_result(results)
 
 if __name__ == "__main__":
