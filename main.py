@@ -17,7 +17,7 @@ from tasks.set_vlans            import  configure_vlans, configure_evpn_vlans, d
 
 def configure_vxlan(task,num_leafs,num_spines):
 
-    ## delete vlans first, EVI instance needs to be configured when there are no evpn vlans
+    ## delete evpn vlans first, EVI instance needs to be configured when there are no evpn vlans
     #task.run(task=global_lock)
     #task.run(task=delete_evpn_vlans)
     #task.run(netconf_validate)
