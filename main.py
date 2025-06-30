@@ -2,6 +2,7 @@
 import time
 from inventory.vars import *
 from inventory.vyos_leafs import *
+from inventory.physical_leafs import *
 
 from nornir import InitNornir
 from nornir.core.filter import F
@@ -13,6 +14,7 @@ from tasks.set_system_settings  import  system_config_payload
 from tasks.set_p2p_links        import  set_p2p_links
 from tasks.set_bgp              import  set_bgp
 from tasks.set_vlans            import  configure_vlans, configure_evpn_vlans, delete_evpn_vlans
+from tasks.set_svi              import  configure_evpn_svi
 
 
 def configure_vxlan(task,num_leafs,num_spines):
@@ -45,6 +47,7 @@ def configure_vxlan(task,num_leafs,num_spines):
     task.run(netconf_commit, manager=task.host["manager"])
 
     task.run(task=global_unlock)
+    time.sleep(3)
 
 
     # set vlans last, EVI instance needs to be configured first
@@ -56,6 +59,12 @@ def configure_vxlan(task,num_leafs,num_spines):
 
     #task.run(task=global_lock)
     #task.run(task=configure_vlans)
+    #task.run(netconf_validate)
+    #task.run(netconf_commit, manager=task.host["manager"])
+    #task.run(task=global_unlock)
+
+    #task.run(task=global_lock)
+    #task.run(task=configure_evpn_svi)
     #task.run(netconf_validate)
     #task.run(netconf_commit, manager=task.host["manager"])
     #task.run(task=global_unlock)

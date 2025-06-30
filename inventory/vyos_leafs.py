@@ -43,7 +43,7 @@ vyos_leafs = [
             {"spine_id": 2, "interface": "1/0/5"}
         ],
         "leaf_connections": [
-            {"leaf_id": 1, "interface": "1/0/5"},
+            {"leaf_id": 2, "interface": "1/0/5"},
         ],
     },
     {

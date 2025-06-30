@@ -55,19 +55,19 @@ def system_config_payload(task):
             </detect>
           </errdisable>
           <hostname>{task.host.name}</hostname>
-            <interface>
-              <Vlan>
-                <name>{monitoring_vlan}</name>
-                <ip>
-                  <address>
-                    <primary>
-                      <address>10.{monitoring_vlan}.0.{switch_id}</address>
-                      <mask>255.255.0.0</mask>
-                    </primary>
-                  </address>
-                </ip>
-              </Vlan>
-            </interface>
+          <interface>
+            <Vlan>
+              <name>{monitoring_vlan}</name>
+              <ip>
+                <address>
+                  <primary>
+                    <address>10.{monitoring_vlan}.0.{switch_id}</address>
+                    <mask>255.255.0.0</mask>
+                  </primary>
+                </address>
+              </ip>
+            </Vlan>
+          </interface>
           <banner>
             <login>
               <banner xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" nc:operation="replace">

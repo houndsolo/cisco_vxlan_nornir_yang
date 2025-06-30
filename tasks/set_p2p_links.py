@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from inventory.vars import *
 from inventory.vyos_leafs import *
+from inventory.physical_leafs import *
 from tasks.netconf_locks import *
 from nornir import InitNornir
 from nornir.core.filter import F
@@ -147,6 +148,7 @@ def set_p2p_links(task, num_spines, num_leafs):
 
         for vyos_leaf in vyos_leafs:
 
+            evpn_vlan_string = ','.join(map(str,evpn_vlans))
             for connection in vyos_leaf["leaf_connections"]:
                 if connection["leaf_id"] == node_id:
                     vyos_leaf_fragment = f"""
@@ -165,7 +167,46 @@ def set_p2p_links(task, num_spines, num_leafs):
                                 <allowed>
                                   <vlan-v2>
                                     <vlan-choices>
-                                      <vlans>6</vlans>
+                                      <vlans>{evpn_vlan_string}</vlans>
+                                    </vlan-choices>
+                                  </vlan-v2>
+                                </allowed>
+                                <native>
+                                  <vlan>
+                                    <vlan-id>1</vlan-id>
+                                  </vlan>
+                                </native>
+                              </trunk>
+                              <nonegotiate xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-switch"/>
+                            </switchport>
+                          </switchport-config>
+
+                        </TenGigabitEthernet>
+                    """
+                    config_fragments.append(vyos_leaf_fragment)
+                    break
+
+        for physical_endpoint in physical_leaf_endpoints:
+            evpn_vlan_string = ','.join(map(str,evpn_vlans))
+            for connection in physical_endpoint["leaf_connections"]:
+                if connection["leaf_id"] == node_id:
+                    vyos_leaf_fragment = f"""
+                        <TenGigabitEthernet>
+                          <name>{connection['interface']}</name>
+                          <description>trunk to {vyos_leaf['host_node']} Proxmox node</description>
+                          <switchport-conf>
+                            <switchport xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" nc:operation="replace">true</switchport>
+                          </switchport-conf>
+                          <switchport-config xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" nc:operation="replace">
+                            <switchport>
+                              <mode xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-switch">
+                                <trunk/>
+                              </mode>
+                               <trunk xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-switch">
+                                <allowed>
+                                  <vlan-v2>
+                                    <vlan-choices>
+                                      <vlans>{evpn_vlan_string}</vlans>
                                     </vlan-choices>
                                   </vlan-v2>
                                 </allowed>

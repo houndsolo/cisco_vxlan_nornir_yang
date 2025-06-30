@@ -14,6 +14,7 @@ bgp_spine_as = 700
 num_spines = 2
 num_leafs = 2
 l2vni_base_default = 9000
+evi_base_default = 0
 
 non_evpn_vlans = [2,3,4,5,7,8,9,20,22,27]
-evpn_vlans = [6,88]
+evpn_vlans = [6,88,89]

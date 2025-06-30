@@ -52,7 +52,7 @@ def set_bgp(task, num_spines, num_leafs):
             """
             bgp_neighbor_l2vpn_evpn_combined.append(bgp_neighbor_l2vpn_evpn_config)
 
-        #evpn config
+
         l2vpn_evpn_config = f"""
               <l2vpn xmlns:nc="urn:ietf:params:xml:ns:netconf:base:1.0" nc:operation="merge">
                 <evpn_cont xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-l2vpn">
@@ -60,14 +60,11 @@ def set_bgp(task, num_spines, num_leafs):
                     <replication-type>
                       <ingress/>
                     </replication-type>
-                    <default-gateway>
-                      <advertise/>
-                    </default-gateway>
-                    <anycast-gateway>
-                      <mac>
-                        <auto/>
-                      </mac>
-                    </anycast-gateway>
+                    <router-id>
+                      <interface>
+                        <Loopback>0</Loopback>
+                      </interface>
+                    </router-id>
                     <route-target>
                       <auto>
                         <vni/>
@@ -79,9 +76,10 @@ def set_bgp(task, num_spines, num_leafs):
                       <profile>
                         <default>
                           <flooding-suppression>
-                            <address-resolution>enable</address-resolution>
+                            <address-resolution>disable</address-resolution>
                           </flooding-suppression>
                           <l2vni-base>{l2vni_base_default}</l2vni-base>
+                          <evi-base>{evi_base_default}</evi-base>
                         </default>
                       </profile>
                     </evpn>
