@@ -37,6 +37,11 @@ def configure_vxlan(task,num_leafs,num_spines):
         num_spines=num_spines,
         num_leafs=num_leafs
     )
+    task.run(netconf_validate)
+    task.run(netconf_commit, manager=task.host["manager"])
+    task.run(task=global_unlock)
+    time.sleep(3)
+    task.run(task=global_lock)
     task.run(
         task=set_bgp,
         num_spines=num_spines,
@@ -78,7 +83,7 @@ def main():
     nr_s8 = nr.filter(hostname="10.20.0.8")
     nr_s10 = nr.filter(hostname="10.20.0.10")
 
-    results = nr_leafs.run(task=configure_vxlan, num_spines=num_spines, num_leafs=num_leafs)
+    results = nr.run(task=configure_vxlan, num_spines=num_spines, num_leafs=num_leafs)
     print_result(results)
 
 if __name__ == "__main__":

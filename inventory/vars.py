@@ -9,7 +9,7 @@ msdp_ip = "10.240.253.255"
 
 bgp_as = 700
 bgp_leaf_as = 700
-bgp_spine_as = 700
+bgp_spine_as = 777
 
 num_spines = 2
 num_leafs = 2

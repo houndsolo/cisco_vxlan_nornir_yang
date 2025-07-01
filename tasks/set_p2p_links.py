@@ -52,13 +52,16 @@ def set_p2p_links(task, num_spines, num_leafs):
                   <switchport-conf>
                     <switchport>false</switchport>
                   </switchport-conf>
+                  <bfd>
+                    <enable xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bfd">true</enable>
+                    <interval-interface xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bfd">
+                      <msecs>100</msecs>
+                      <min_rx>100</min_rx>
+                      <multiplier>3</multiplier>
+                    </interval-interface>
+                  </bfd>
                   <ip>
-                    <address>
-                      <primary>
-                        <address>{p2p_ip}</address>
-                        <mask>{p2p_ip_mask}</mask>
-                      </primary>
-                    </address>
+                  <unnumbered>Loopback0</unnumbered>
                     <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
                       <ospf>
                         <process-id>
@@ -240,13 +243,16 @@ def set_p2p_links(task, num_spines, num_leafs):
                           <switchport-conf>
                             <switchport>false</switchport>
                           </switchport-conf>
+                          <bfd>
+                            <enable xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bfd">true</enable>
+                            <interval-interface xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bfd">
+                              <msecs>100</msecs>
+                              <min_rx>100</min_rx>
+                              <multiplier>3</multiplier>
+                            </interval-interface>
+                          </bfd>
                           <ip>
-                            <address>
-                              <primary>
-                                <address>{p2p_ip}</address>
-                                <mask>{p2p_ip_mask}</mask>
-                              </primary>
-                            </address>
+                            <unnumbered>Loopback0</unnumbered>
                             <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
                               <ospf>
                                 <process-id>
@@ -283,13 +289,16 @@ def set_p2p_links(task, num_spines, num_leafs):
                   <switchport-conf>
                     <switchport>false</switchport>
                   </switchport-conf>
+                  <bfd>
+                    <enable xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bfd">true</enable>
+                    <interval-interface xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bfd">
+                      <msecs>100</msecs>
+                      <min_rx>100</min_rx>
+                      <multiplier>3</multiplier>
+                    </interval-interface>
+                  </bfd>
                   <ip>
-                    <address>
-                      <primary>
-                        <address>{p2p_ip}</address>
-                        <mask>{p2p_ip_mask}</mask>
-                      </primary>
-                    </address>
+                    <unnumbered>Loopback0</unnumbered>
                     <router-ospf xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-ospf">
                       <ospf>
                         <process-id>
@@ -447,12 +456,10 @@ def set_p2p_links(task, num_spines, num_leafs):
               <ospf>
                 <process-id>
                   <id>1</id>
-                  <redistribute>
-                    <bgp>
-                      <as>{bgp_as}</as>
-                    </bgp>
-                  </redistribute>
                   <router-id>{loopback_ip}</router-id>
+                  <bfd>
+                    <all-interfaces/>
+                  </bfd>
                 </process-id>
               </ospf>
             </router-ospf>

@@ -20,6 +20,9 @@ def set_bgp(task, num_spines, num_leafs):
             bgp_neighbor_base_config = f"""
                   <neighbor>
                     <id>{spine_bgp_peering_ip}</id>
+                    <fall-over>
+                      <bfd/>
+                    </fall-over>
                     <remote-as>{bgp_spine_as}</remote-as>
                     <ebgp-multihop-v2>
                       <enable/>
@@ -105,13 +108,52 @@ def set_bgp(task, num_spines, num_leafs):
               </interface>
         """
 
+        full_config_payload = f"""
+          <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+            <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+              {locals().get("nve_interface_configuration", "")}
+              {locals().get("l2vpn_evpn_config", "")}
+              <router>
+                <bgp xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bgp">
+                  <id>{bgp_leaf_as + node_id}</id>
+                  <bgp>
+                    <default>
+                      <ipv4-unicast>false</ipv4-unicast>
+                      <route-target>
+                        <filter>false</filter>
+                      </route-target>
+                    </default>
+                    <log-neighbor-changes>true</log-neighbor-changes>
+                  </bgp>
+              {''.join(bgp_neighbor_base_combined)}
+                  <address-family>
+                    <no-vrf>
+                      <l2vpn>
+                        <af-name>evpn</af-name>
+                        <l2vpn-evpn>
+                          <rewrite-evpn-rt-asn/>
+              {''.join(bgp_neighbor_l2vpn_evpn_combined)}
+                        </l2vpn-evpn>
+                      </l2vpn>
+                    </no-vrf>
+                  </address-family>
+                </bgp>
+              </router>
+            </native>
+          </config>
+        """
+
+
     elif "spine" in task.host.groups:
         for vyos_leaf in vyos_leafs:
             vyos_bgp_peer_ip = f"10.240.254.{vyos_leaf['node_id']}"
             bgp_neighbor_base_config = f"""
                   <neighbor>
                     <id>{vyos_bgp_peer_ip}</id>
-                    <remote-as>{bgp_leaf_as}</remote-as>
+                    <remote-as>{bgp_leaf_as + vyos_leaf['node_id']}</remote-as>
+                    <fall-over>
+                      <bfd/>
+                    </fall-over>
                     <ebgp-multihop-v2>
                       <enable/>
                       <max-hop>4</max-hop>
@@ -132,7 +174,10 @@ def set_bgp(task, num_spines, num_leafs):
                           <neighbor>
                             <id>{vyos_bgp_peer_ip}</id>
                             <activate/>
-                            <route-reflector-client/>
+                            <nexthop-unchanged>
+                              <next-hop-unchanged/>
+                              <allpaths/>
+                            </nexthop-unchanged>
                             <send-community-v2>
                               <send-community-where>both</send-community-where>
                             </send-community-v2>
@@ -149,7 +194,10 @@ def set_bgp(task, num_spines, num_leafs):
             bgp_neighbor_base_config = f"""
                   <neighbor>
                     <id>{leaf_bgp_peer_ip}</id>
-                    <remote-as>{bgp_leaf_as}</remote-as>
+                    <remote-as>{bgp_leaf_as + leaf_index + 1}</remote-as>
+                    <fall-over>
+                      <bfd/>
+                    </fall-over>
                     <ebgp-multihop-v2>
                       <enable/>
                       <max-hop>4</max-hop>
@@ -170,7 +218,10 @@ def set_bgp(task, num_spines, num_leafs):
                           <neighbor>
                             <id>{leaf_bgp_peer_ip}</id>
                             <activate/>
-                            <route-reflector-client/>
+                            <nexthop-unchanged>
+                              <next-hop-unchanged/>
+                              <allpaths/>
+                            </nexthop-unchanged>
                             <send-community-v2>
                               <send-community-where>both</send-community-where>
                             </send-community-v2>
@@ -182,42 +233,38 @@ def set_bgp(task, num_spines, num_leafs):
             """
             bgp_neighbor_l2vpn_evpn_combined.append(bgp_neighbor_l2vpn_evpn_config)
 
-    full_config_payload = f"""
-      <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
-        <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
-          {locals().get("nve_interface_configuration", "")}
-          {locals().get("l2vpn_evpn_config", "")}
-          <router>
-            <bgp xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bgp">
-              <id>{bgp_as}</id>
-              <bgp>
-                <default>
-                  <ipv4-unicast>false</ipv4-unicast>
-                  <route-target>
-                    <filter>false</filter>
-                  </route-target>
-                </default>
-                <log-neighbor-changes>true</log-neighbor-changes>
-              </bgp>
-          {''.join(bgp_neighbor_base_combined)}
-              <address-family>
-                <no-vrf>
-                  <ipv4>
-                    <af-name>unicast</af-name>
-                  </ipv4>
-                  <l2vpn>
-                    <af-name>evpn</af-name>
-                    <l2vpn-evpn>
-          {''.join(bgp_neighbor_l2vpn_evpn_combined)}
-                    </l2vpn-evpn>
-                  </l2vpn>
-                </no-vrf>
-              </address-family>
-            </bgp>
-          </router>
-        </native>
-      </config>
-    """
+        full_config_payload = f"""
+          <config xmlns="urn:ietf:params:xml:ns:netconf:base:1.0">
+            <native xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-native">
+              <router>
+                <bgp xmlns="http://cisco.com/ns/yang/Cisco-IOS-XE-bgp">
+                  <id>{bgp_spine_as}</id>
+                  <bgp>
+                    <default>
+                      <ipv4-unicast>false</ipv4-unicast>
+                      <route-target>
+                        <filter>false</filter>
+                      </route-target>
+                    </default>
+                    <log-neighbor-changes>true</log-neighbor-changes>
+                  </bgp>
+              {''.join(bgp_neighbor_base_combined)}
+                  <address-family>
+                    <no-vrf>
+                      <l2vpn>
+                        <af-name>evpn</af-name>
+                        <l2vpn-evpn>
+                          <rewrite-evpn-rt-asn/>
+              {''.join(bgp_neighbor_l2vpn_evpn_combined)}
+                        </l2vpn-evpn>
+                      </l2vpn>
+                    </no-vrf>
+                  </address-family>
+                </bgp>
+              </router>
+            </native>
+          </config>
+        """
 
 
     result = task.run(netconf_edit_config, config=full_config_payload, target="candidate")
