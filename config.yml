@@ -1,8 +1,17 @@
 ---
 inventory:
-  plugin: AnsibleInventory
+  plugin: NetBoxInventory2
   options:
-    hostsfile: "inventory/hosts.yml"
+    nb_url: "http://10.2.0.40:8000"
+    nb_token: "cdb5c8aa10557b0a134e1c3885683ae38ef72857"
+    ssl_verify: false
+    filter_parameters: {
+      role: "switchl3"
+    }
+
+  #plugin: AnsibleInventory
+  #options:
+  #  hostsfile: "inventory/hosts.yml"
 
 ssh:
   config_file: "~/.ssh/config"

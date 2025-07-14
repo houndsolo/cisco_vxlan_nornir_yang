@@ -76,12 +76,12 @@ def configure_vxlan(task,num_leafs,num_spines):
 
 def main():
     nr = InitNornir(config_file="config.yml")
-    nr_spines = nr.filter(F(groups__contains="spine"))
-    nr_leafs = nr.filter(F(groups__contains="leaf"))
-    nr_s7 = nr.filter(hostname="10.20.0.7")
-    nr_s9 = nr.filter(hostname="10.20.0.9")
-    nr_s8 = nr.filter(hostname="10.20.0.8")
-    nr_s10 = nr.filter(hostname="10.20.0.10")
+#    nr_spines = nr.filter(F(groups__contains="spine"))
+#    nr_leafs = nr.filter(F(groups__contains="leaf"))
+#    nr_s7 = nr.filter(hostname="10.20.0.7")
+#    nr_s9 = nr.filter(hostname="10.20.0.9")
+#    nr_s8 = nr.filter(hostname="10.20.0.8")
+#    nr_s10 = nr.filter(hostname="10.20.0.10")
 
     results = nr.run(task=configure_vxlan, num_spines=num_spines, num_leafs=num_leafs)
     print_result(results)
