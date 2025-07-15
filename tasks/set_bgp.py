@@ -13,7 +13,7 @@ def set_bgp(task, num_spines, num_leafs):
     bgp_neighbor_base_combined = []
     bgp_neighbor_l2vpn_evpn_combined = []
 
-    if "leaf" in task.host.groups:
+    if task.host["vxlan_device_type"] == "leaf":
         for spine_index in range(num_spines):
             spine_bgp_peering_ip = f"10.240.255.{spine_index + 1}"
 
@@ -144,7 +144,7 @@ def set_bgp(task, num_spines, num_leafs):
         """
 
 
-    elif "spine" in task.host.groups:
+    elif task.host["vxlan_device_type"] == "spine":
         for vyos_leaf in vyos_leafs:
             vyos_bgp_peer_ip = f"10.240.254.{vyos_leaf['node_id']}"
             bgp_neighbor_base_config = f"""

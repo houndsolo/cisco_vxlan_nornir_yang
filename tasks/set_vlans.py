@@ -7,7 +7,7 @@ from nornir_utils.plugins.functions import print_result
 
 
 def configure_evpn_vlans(task):
-    if "leaf" in task.host.groups:
+    if task.host["vxlan_device_type"] == "leaf":
 
         vlan_evpn_config = []
 
@@ -38,7 +38,7 @@ def configure_evpn_vlans(task):
         result = task.run(netconf_edit_config, config=config_payload, target="candidate")
 
 def delete_evpn_vlans(task):
-    if "leaf" in task.host.groups:
+    if task.host["vxlan_device_type"] == "leaf":
 
         vlan_evpn_config = []
 

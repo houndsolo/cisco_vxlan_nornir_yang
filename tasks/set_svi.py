@@ -7,7 +7,7 @@ from nornir_utils.plugins.functions import print_result
 
 
 def configure_evpn_svi(task):
-    if "leaf" in task.host.groups:
+    if task.host["vxlan_device_type"] == "leaf":
 
         svi_config = []
 

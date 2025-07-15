@@ -3,6 +3,7 @@ inventory:
   plugin: NetBoxInventory2
   options:
     nb_url: "http://10.2.0.40:8000"
+    flatten_custom_fields: true
     nb_token: "cdb5c8aa10557b0a134e1c3885683ae38ef72857"
     ssl_verify: false
     filter_parameters: {

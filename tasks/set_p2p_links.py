@@ -26,10 +26,10 @@ def set_p2p_links(task, num_spines, num_leafs):
     msdp_ip = "10.240.253.255"
 
 
-    if "leaf" in task.host.groups:
+    if task.host["vxlan_device_type"] == "leaf":
         loopback_ip = f"10.240.254.{node_id}"
         loopback_ip2 = f"10.240.250.{node_id}"
-    elif "spine" in task.host.groups:
+    elif task.host["vxlan_device_type"] == "spine":
         loopback_ip = f"10.240.255.{node_id}"
         loopback_ip1 = f"10.240.253.{node_id}"
         loopback_ip2 = f"10.240.253.255" # MSDP
@@ -40,7 +40,7 @@ def set_p2p_links(task, num_spines, num_leafs):
     p2p_ip_mask = "255.255.255.254"
     loopback_mask = "255.255.255.255"
 
-    if "leaf" in task.host.groups:
+    if task.host["vxlan_device_type"] == "leaf":
         for spine_index in range(num_spines):
             interface_port = spine_index + 1
             p2p_ip = f"10.240.{node_id}{spine_index+1}.1"
@@ -229,7 +229,7 @@ def set_p2p_links(task, num_spines, num_leafs):
                     break
 
 
-    elif "spine" in task.host.groups:
+    elif task.host["vxlan_device_type"] == "spine":
         for vyos_leaf in vyos_leafs:
 
             p2p_ip = f"10.240.{vyos_leaf['node_id']}{node_id}.0"

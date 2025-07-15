@@ -28,7 +28,6 @@ def configure_vxlan(task,num_leafs,num_spines):
 
     # rest of evpn vxlan config
     task.run(task=global_lock)
-
     task.run(
         task=system_config_payload,
     )
@@ -41,6 +40,7 @@ def configure_vxlan(task,num_leafs,num_spines):
     task.run(netconf_commit, manager=task.host["manager"])
     task.run(task=global_unlock)
     time.sleep(3)
+
     task.run(task=global_lock)
     task.run(
         task=set_bgp,
@@ -50,7 +50,6 @@ def configure_vxlan(task,num_leafs,num_spines):
 
     task.run(netconf_validate)
     task.run(netconf_commit, manager=task.host["manager"])
-
     task.run(task=global_unlock)
     time.sleep(3)
 
